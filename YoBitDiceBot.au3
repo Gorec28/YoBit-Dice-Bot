@@ -13,7 +13,6 @@ SplashScreen('', 320, 56, -1, -1, $temp_img, $SC_FADE_IN, $SC_FADE_OUT, 1000)
 FileDelete(@TempDir & "SplashScreen.jpg")
 
 
-
 #AutoIt3Wrapper_Icon = icon.ico
 TraySetIcon("icon.ico")
 
@@ -42,8 +41,6 @@ EndFunc
 Func Terminate()
 	Exit 0
 EndFunc
-
-
 
 
 func GetBalance($coin)
@@ -104,12 +101,10 @@ func SaveLogFile($text)
 endfunc
 
 
-
 func StartRoll()
 	$balanceBefore = GetBalance($coin)
 	$betBefore = 0
 	$rollBefore = 0
-;	$DiceRoll = 500
 
 	For $i = 1 To $DiceRoll
 
@@ -169,46 +164,18 @@ func StartRoll()
 endfunc
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Local $oIE = _IECreate("https://" & $domen & "/" & $lang & "/dice/", 0, 1, 0, 1)
 _IELoadWait($oIE)
 $oInputCurrency = _IEGetObjByName($oIE, "currency")
 $oBalance = _IEPropertyGet($oInputCurrency, "innertext")
-;	$oBalance = "LIZA (Bitcoin Liza) - 12.93237493 LIZA GT (GTcoin) - 7.6820213 GT RUR (RUR) - 5.23294004 RUR"
-;	$CoinList = "LIZA: 12.93237493|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678"
 $CoinList = StringRegExpReplace($oBalance, '\S+ \(\D+\) - (\d+\.\d+) (\w+) ?', '$2: $1|')
 $CoinList = StringTrimRight($CoinList, 1)
 SaveLogFile($CoinList)
 
 
-
-
-
-;Exit
-
-
-
 #Region GUI
-
 $hGUI = GUICreate($title, 480, 250)
 GUISetFont(10)
-
 
 GUICtrlCreateLabel('Select a coin:', 10, 13)
 ;$CoinList = "LIZA: 123456789.93237493|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678|GT: 7.6820213|RUR: 5.23294004|BTC: 5.23294004|LTC: 700.25489618|DOGE: 1054.12345678"
@@ -216,13 +183,11 @@ $CoinChoice = GUICtrlCreateCombo("", 95, 10, 150, 550, BitOR($GUI_SS_DEFAULT_COM
 GUICtrlSetData(-1, $CoinList, "")
 GUICtrlSendMsg(-1, $CB_SETDROPPEDWIDTH, 150, 0)
 
-
 GUICtrlCreateLabel('Select a bet:', 10, 44)
 $BetList = "0.00000001|0.0000001|0.000001|0.00001|0.0001|0.001|0.01|0.1|1|10|100|1000"
 $BetChoice = GUICtrlCreateCombo("", 95, 40, 150, 550, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_NOINTEGRALHEIGHT))
 GUICtrlSetData(-1, $BetList, "")
 GUICtrlSendMsg(-1, $CB_SETDROPPEDWIDTH, 150, 0)
-
 
 GUICtrlCreateLabel(	"This software is supplied AS IS without any warranties and support." & @CRLF & @CRLF & _
 					"1: Bot only works with IE." & @CRLF & _
@@ -230,11 +195,9 @@ GUICtrlCreateLabel(	"This software is supplied AS IS without any warranties and 
 					"3: Bot works on the strategy of Martingale" & @CRLF & _
 					"4: PAUSE - pause the script. ESC - terminate script", 10, 80)
 
-
 GUICtrlCreateLabel('Stop Loss:*', 260, 13)
 GUICtrlSetTip(-1, "How much are you willing to lose?" & @CRLF & "If it's bad luck")
 Local $StopLossChoice = GUICtrlCreateInput('', 330, 10, 140, 20)
-
 
 GUICtrlCreateLabel('Dice rolls:*', 260, 44)
 GUICtrlSetTip(-1, 'Number of dice rolls.' & @CRLF & 'Recommended at least 10.')
@@ -242,7 +205,6 @@ $NumberDiceRoll = "|100|500|1000|5000|10000"
 $DiceRollChoice = GUICtrlCreateCombo("", 330, 40, 50, 550, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_NOINTEGRALHEIGHT))
 GUICtrlSetData(-1, $NumberDiceRoll, "")
 GUICtrlSendMsg(-1, $CB_SETDROPPEDWIDTH, 50, 0)
-
 
 $RunBot	= GUICtrlCreateButton("Run Bot", 370, 200, 70, 30)
 $Exit	= GUICtrlCreateButton("Exit", 250, 200, 70, 30)
@@ -303,11 +265,6 @@ GUIDelete()
 #EndRegion GUI
 
 
-
-
-
-; Получает координаты и размеры области для ввода ставки
-;
 $oInputBet = _IEGetObjByName($oIE, "bet")
 $iBetX = _IEPropertyGet($oInputBet, "screenx")
 $iBetY = _IEPropertyGet($oInputBet, "screeny")
@@ -317,22 +274,14 @@ $iBetPosX = $iBetX + $iBetW/2
 $iBetPosY = $iBetY + $iBetH/2
 
 
-
-; Save to log file initial data
 $initialCoinBalance = GetBalance($coin)
-;$text = @CRLF & "	Coin:	" & $coin & @CRLF & "	Balance:	" & $initialCoinBalance & @CRLF & "	Bet:		" & $bet
-;SaveLogFile($text)
-
 ;IniWrite("Settings.ini", "Coin", $coin, $initialCoinBalance)
 ;IniWrite("Settings.ini", "Bet", "Bet", $bet)
-
-
 
 
 Sleep(2000)
 
 StartRoll()
-
 
 
 ; Save to log file finally data
